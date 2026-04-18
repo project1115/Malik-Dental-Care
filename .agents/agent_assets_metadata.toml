@@ -53,3 +53,9 @@ id = "nGFMVhB0ebHRXTl-LiXmw"
 uri = "file://dr-karan-malik-site.tar.gz"
 type = "unspecified"
 title = "Dr. Karan Malik - Static Site (tar.gz)"
+
+[[outputs]]
+id = "jbQYR4DVzrGe_sc4thXAX"
+uri = "file://dr-karan-malik-vscode.zip"
+type = "unspecified"
+title = "Dr. Karan Malik - React + Vite Source Code (.zip)"
