@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -379,36 +380,81 @@ const Testimonials = () => {
     { name: "Rahul Sharma", text: "Dr. Malik is incredible! I was always afraid of dentists, but his gentle approach completely changed my mind. The clinic is spotless and the staff is wonderful.", rating: 5 },
     { name: "Priya Patel", text: "Got my Invisalign treatment here. The entire process was smooth, transparent, and the results are amazing. Highly recommend for any cosmetic work.", rating: 5 },
     { name: "Amit Kumar", text: "The best dental experience I've ever had. Modern equipment, no waiting time, and Dr. Karan explains everything clearly before starting the procedure.", rating: 5 },
+    { name: "Sunita Verma", text: "Had my root canal done here and was genuinely surprised — completely painless! Dr. Malik's expertise and the friendly staff made the whole experience so comfortable.", rating: 5 },
+    { name: "Deepak Singh", text: "Brought my whole family here for regular check-ups. The pediatric care for my kids was exceptional. They actually look forward to their dental visits now!", rating: 5 },
+    { name: "Neha Gupta", text: "Got teeth whitening done and the results are stunning. Professional, caring team and very transparent about costs. Will definitely be coming back!", rating: 5 },
   ];
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start", slidesToScroll: 1 });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    setScrollSnaps(emblaApi.scrollSnapList());
+    emblaApi.on("select", onSelect);
+    onSelect();
+
+    const autoplay = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 3500);
+
+    return () => {
+      clearInterval(autoplay);
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
   return (
-    <section id="reviews" className="py-24 bg-white">
+    <section id="reviews" className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-6">Patient Stories</h2>
           <p className="text-muted-foreground text-lg">Don't just take our word for it. Read what our patients have to say about their experience with us.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {reviews.map((review, index) => (
-            <div key={index} className="bg-secondary/20 p-8 rounded-2xl relative border border-border/50">
-              <Quote className="absolute top-6 right-6 h-10 w-10 text-primary/10" />
-              <div className="flex gap-1 mb-6">
-                {[...Array(review.rating)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-accent text-accent" />
-                ))}
-              </div>
-              <p className="text-muted-foreground mb-8 text-lg italic leading-relaxed">"{review.text}"</p>
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-xl">
-                  {review.name.charAt(0)}
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-6">
+            {reviews.map((review, index) => (
+              <div
+                key={index}
+                className="flex-none w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-secondary/20 p-8 rounded-2xl relative border border-border/50"
+              >
+                <Quote className="absolute top-6 right-6 h-10 w-10 text-primary/10" />
+                <div className="flex gap-1 mb-6">
+                  {[...Array(review.rating)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-accent text-accent" />
+                  ))}
                 </div>
-                <div>
-                  <h4 className="font-bold text-foreground">{review.name}</h4>
-                  <p className="text-sm text-muted-foreground">Verified Patient</p>
+                <p className="text-muted-foreground mb-8 text-lg italic leading-relaxed">"{review.text}"</p>
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-xl">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-foreground">{review.name}</h4>
+                    <p className="text-sm text-muted-foreground">Verified Patient</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-center gap-2 mt-10">
+          {scrollSnaps.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => emblaApi?.scrollTo(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                index === selectedIndex ? "w-8 bg-primary" : "w-2.5 bg-primary/25"
+              }`}
+            />
           ))}
         </div>
       </div>
