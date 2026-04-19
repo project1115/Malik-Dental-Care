@@ -10,7 +10,8 @@ import {
   Quote, ShieldCheck, HeartPulse, Activity, Play, ChevronLeft, ZoomIn
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import clinicLogo from "@assets/image_1776411256885.png";
+
+const clinicLogo = "/logo.png";
 
 const TopBar = () => (
   <div className="bg-primary text-primary-foreground py-2 px-4 text-sm hidden md:block">
