@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { 
   Phone, Mail, MapPin, Clock, Facebook, Twitter, Instagram, 
   Menu, X, CheckCircle2, ChevronRight, Star, 
-  Quote, ShieldCheck, HeartPulse, Activity, Play, ChevronLeft, ZoomIn
+  Quote, ShieldCheck, HeartPulse, Activity, Play, ChevronLeft, ZoomIn,
+  Trophy, Microscope, Users, BadgeCheck, Sparkles, TrendingUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -289,9 +290,9 @@ const useCountUp = (end: number, duration: number = 2000, shouldStart: boolean =
 };
 
 const StatCard = ({
-  value, suffix, label, className = "", delay = 0, isVisible
+  value, suffix, label, icon, gradient, className = "", delay = 0, isVisible
 }: {
-  value: number; suffix: string; label: string; className?: string; delay?: number; isVisible: boolean;
+  value: number; suffix: string; label: string; icon: React.ReactNode; gradient: string; className?: string; delay?: number; isVisible: boolean;
 }) => {
   const [started, setStarted] = useState(false);
   const count = useCountUp(value, 2000, started);
@@ -308,18 +309,67 @@ const StatCard = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.85 }}
-      animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.5, delay: delay / 1000, ease: "easeOut" }}
-      className={`bg-white/10 p-8 rounded-2xl backdrop-blur-sm border border-white/10 text-center ${className}`}
+      initial={{ opacity: 0, y: 24, scale: 0.9 }}
+      animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ duration: 0.55, delay: delay / 1000, ease: "easeOut" }}
+      whileHover={{ y: -4, scale: 1.03 }}
+      className={`relative overflow-hidden rounded-2xl p-6 text-center group cursor-default ${className}`}
+      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(12px)" }}
     >
-      <div className="text-4xl font-bold text-accent mb-2">
+      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${gradient}`} style={{ opacity: 0.08 }} />
+      <div className={`inline-flex items-center justify-center h-12 w-12 rounded-xl mb-4 mx-auto ${gradient}`}>
+        {icon}
+      </div>
+      <div className="text-4xl font-bold text-white mb-1">
         {displayValue}{suffix}
       </div>
-      <div className="text-sm font-medium uppercase tracking-wider">{label}</div>
+      <div className="text-sm font-medium text-white/60 uppercase tracking-wider">{label}</div>
     </motion.div>
   );
 };
+
+const trustPoints = [
+  {
+    icon: <Trophy className="h-5 w-5" />,
+    gradient: "from-yellow-400 to-orange-500",
+    bg: "bg-gradient-to-br from-yellow-400/20 to-orange-500/20 border-yellow-400/30",
+    iconColor: "text-yellow-400",
+    title: "20+ Years of Proven Excellence",
+    desc: "Two decades of trusted dental care with thousands of successful treatments.",
+  },
+  {
+    icon: <Microscope className="h-5 w-5" />,
+    gradient: "from-blue-400 to-cyan-500",
+    bg: "bg-gradient-to-br from-blue-400/20 to-cyan-500/20 border-blue-400/30",
+    iconColor: "text-blue-400",
+    title: "State-of-the-Art Technology",
+    desc: "Advanced digital imaging and modern equipment for precise, comfortable care.",
+  },
+  {
+    icon: <ShieldCheck className="h-5 w-5" />,
+    gradient: "from-green-400 to-emerald-500",
+    bg: "bg-gradient-to-br from-green-400/20 to-emerald-500/20 border-green-400/30",
+    iconColor: "text-green-400",
+    title: "Strict Safety & Hygiene Protocols",
+    desc: "Fully sterilized instruments and clinic-grade hygiene standards, every visit.",
+  },
+  {
+    icon: <BadgeCheck className="h-5 w-5" />,
+    gradient: "from-purple-400 to-violet-500",
+    bg: "bg-gradient-to-br from-purple-400/20 to-violet-500/20 border-purple-400/30",
+    iconColor: "text-purple-400",
+    title: "Transparent, No Hidden Fees",
+    desc: "Clear pricing upfront. We explain every cost before any treatment begins.",
+  },
+  {
+    icon: <HeartPulse className="h-5 w-5" />,
+    gradient: "from-rose-400 to-pink-500",
+    bg: "bg-gradient-to-br from-rose-400/20 to-pink-500/20 border-rose-400/30",
+    iconColor: "text-rose-400",
+    title: "Anxiety-Free Environment",
+    desc: "Gentle, patient-first approach so every visit is calm and stress-free.",
+  },
+];
 
 const WhyChooseUs = () => {
   const statsRef = useRef<HTMLDivElement>(null);
@@ -333,43 +383,64 @@ const WhyChooseUs = () => {
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
     if (statsRef.current) observer.observe(statsRef.current);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section className="py-24 bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold font-serif mb-6">Why Patients Trust Us</h2>
-            <p className="text-primary-foreground/80 text-lg mb-8">
-              Choosing a dentist is an important decision. We've built our practice on trust, transparency, and clinical excellence.
-            </p>
-            <ul className="space-y-6">
-              {[
-                "Over 20 years of proven clinical success",
-                "State-of-the-art diagnostic and treatment technology",
-                "Strict sterilization and hygiene protocols",
-                "Transparent, affordable pricing with no hidden fees",
-                "Comfortable, anxiety-free clinic environment"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-4">
-                  <div className="bg-white/20 p-1 rounded-full">
-                    <CheckCircle2 className="h-5 w-5 text-accent" />
-                  </div>
-                  <span className="text-lg">{item}</span>
-                </li>
-              ))}
-            </ul>
+    <section className="py-24 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0d1b2a 0%, #0a2e2a 40%, #0f1f3d 100%)" }}>
+      <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #14b8a6, transparent)" }} />
+      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #6366f1, transparent)" }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-5 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #f59e0b, transparent)" }} />
+
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 mb-5">
+            <Sparkles className="h-4 w-4 text-yellow-400" />
+            <span className="text-sm font-medium text-white/80">Why Choose Us</span>
           </div>
+          <h2 className="text-3xl md:text-5xl font-bold font-serif text-white mb-4">Why Patients <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">Trust Us</span></h2>
+          <p className="text-white/60 text-lg max-w-2xl mx-auto">
+            Choosing a dentist is a big decision. We've built our practice on trust, transparency, and clinical excellence.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-4">
+            {trustPoints.map((point, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+                whileHover={{ x: 6 }}
+                className={`flex items-start gap-4 p-4 rounded-2xl border backdrop-blur-sm transition-all duration-300 ${point.bg}`}
+              >
+                <div className={`flex-shrink-0 h-10 w-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${point.gradient} shadow-lg`}>
+                  <span className="text-white">{point.icon}</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white text-base mb-0.5">{point.title}</h3>
+                  <p className="text-white/55 text-sm leading-relaxed">{point.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
           <div ref={statsRef} className="grid grid-cols-2 gap-4">
-            <StatCard value={5000} suffix="+" label="Happy Patients" isVisible={isVisible} delay={0} />
-            <StatCard value={20} suffix="+" label="Years Experience" isVisible={isVisible} delay={200} className="md:translate-y-8" />
-            <StatCard value={15} suffix="+" label="Awards Won" isVisible={isVisible} delay={400} className="md:-translate-y-8" />
-            <StatCard value={100} suffix="%" label="Commitment" isVisible={isVisible} delay={600} />
+            <StatCard value={5000} suffix="+" label="Happy Patients" icon={<Users className="h-6 w-6 text-white" />} gradient="bg-gradient-to-br from-teal-400 to-cyan-500" isVisible={isVisible} delay={0} />
+            <StatCard value={20} suffix="+" label="Years Experience" icon={<TrendingUp className="h-6 w-6 text-white" />} gradient="bg-gradient-to-br from-yellow-400 to-orange-500" isVisible={isVisible} delay={200} className="md:translate-y-6" />
+            <StatCard value={15} suffix="+" label="Awards Won" icon={<Trophy className="h-6 w-6 text-white" />} gradient="bg-gradient-to-br from-purple-400 to-violet-500" isVisible={isVisible} delay={400} className="md:-translate-y-6" />
+            <StatCard value={100} suffix="%" label="Commitment" icon={<HeartPulse className="h-6 w-6 text-white" />} gradient="bg-gradient-to-br from-rose-400 to-pink-500" isVisible={isVisible} delay={600} />
           </div>
         </div>
       </div>
