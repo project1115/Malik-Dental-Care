@@ -15,28 +15,31 @@ import { useToast } from "@/hooks/use-toast";
 const clinicLogo = "/logo.png";
 
 const TopBar = () => (
-  <div className="bg-primary text-primary-foreground py-2 px-4 text-sm hidden md:block">
+  <div className="text-white py-2 px-4 text-sm hidden md:block" style={{ background: "linear-gradient(90deg, #0d9488, #0f766e)" }}>
     <div className="container mx-auto flex justify-between items-center max-w-7xl">
       <div className="flex items-center space-x-6">
-        <a href="tel:+919876543210" className="flex items-center gap-2 hover:text-accent transition-colors">
-          <Phone className="h-4 w-4" />
+        <a href="tel:+919876543210" className="flex items-center gap-2 hover:text-yellow-300 transition-colors font-medium">
+          <Phone className="h-3.5 w-3.5" />
           <span>Emergency: +91 98765 43210</span>
         </a>
-        <span className="flex items-center gap-2">
-          <MapPin className="h-4 w-4" />
-          <span>123 Dental Street, New Delhi, India</span>
+        <span className="text-white/50">|</span>
+        <span className="flex items-center gap-2 text-white/80">
+          <Clock className="h-3.5 w-3.5" />
+          <span>Mon–Sat: 9AM – 8PM</span>
         </span>
       </div>
-      <div className="flex items-center space-x-4">
-        <a href="#" className="hover:text-accent transition-colors" aria-label="Facebook">
-          <Facebook className="h-4 w-4" />
-        </a>
-        <a href="#" className="hover:text-accent transition-colors" aria-label="Twitter">
-          <Twitter className="h-4 w-4" />
-        </a>
-        <a href="#" className="hover:text-accent transition-colors" aria-label="Instagram">
-          <Instagram className="h-4 w-4" />
-        </a>
+      <div className="flex items-center gap-5">
+        <span className="text-white/70 text-xs">Follow us:</span>
+        {[
+          { Icon: Facebook, label: "Facebook" },
+          { Icon: Twitter, label: "Twitter" },
+          { Icon: Instagram, label: "Instagram" },
+        ].map(({ Icon, label }) => (
+          <a key={label} href="#" aria-label={label}
+            className="h-6 w-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/25 transition-colors">
+            <Icon className="h-3 w-3" />
+          </a>
+        ))}
       </div>
     </div>
   </div>
@@ -62,41 +65,50 @@ const Header = () => {
   ];
 
   return (
-    <header 
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-3" : "bg-white py-4"
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-500 ${
+        isScrolled
+          ? "bg-white/95 backdrop-blur-xl shadow-[0_2px_24px_rgba(0,0,0,0.08)] py-2"
+          : "bg-white/90 backdrop-blur-sm py-3"
       }`}
     >
       <div className="container mx-auto px-4 max-w-7xl flex items-center justify-between">
-        <a href="#home" className="flex items-center gap-2">
-          <img src={clinicLogo} alt="Dr. Karan Malik Dental Clinic Logo" className="h-14 w-14 object-contain" />
+        <a href="#home" className="flex items-center gap-3 group">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
+            <img src={clinicLogo} alt="Dr. Karan Malik Dental Clinic Logo" className="h-12 w-12 object-contain relative z-10" />
+          </div>
           <div>
-            <h1 className="text-xl font-bold font-serif text-foreground leading-none">Dr. Karan Malik</h1>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-1">Dental Clinic</p>
+            <h1 className="text-lg font-bold font-serif text-foreground leading-none tracking-tight">Dr. Karan Malik</h1>
+            <p className="text-[10px] text-primary uppercase tracking-[0.18em] font-bold mt-0.5">Dental Clinic</p>
           </div>
         </a>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center space-x-8">
+        <nav className="hidden lg:flex items-center space-x-1">
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
+            <a
+              key={link.name}
               href={link.href}
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+              className="relative px-4 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors duration-200 group"
             >
               {link.name}
+              <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-primary rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </a>
           ))}
         </nav>
 
-        <div className="hidden lg:block">
-          <Button asChild className="bg-primary hover:bg-primary/90 text-white rounded-full px-6">
-            <a href="#contact">Book Appointment</a>
-          </Button>
+        <div className="hidden lg:flex items-center gap-3">
+          <a href="tel:+919876543210" className="flex items-center gap-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors">
+            <Phone className="h-4 w-4" />
+            +91 98765 43210
+          </a>
+          <a href="#contact"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-primary/30 hover:shadow-lg hover:-translate-y-0.5">
+            Book Appointment
+          </a>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="lg:hidden p-2 text-foreground"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
@@ -105,24 +117,34 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Nav */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-t border-border shadow-lg py-4 px-4 flex flex-col space-y-4">
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              className="text-base font-medium text-foreground py-2 border-b border-border/50"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.name}
-            </a>
-          ))}
-          <Button asChild className="w-full mt-4 bg-primary text-white rounded-full">
-            <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Book Appointment</a>
-          </Button>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="lg:hidden overflow-hidden bg-white border-t border-border/30 shadow-xl"
+          >
+            <div className="px-4 py-6 flex flex-col space-y-1">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-base font-medium text-foreground/80 hover:text-primary py-3 px-3 rounded-xl hover:bg-primary/5 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </a>
+              ))}
+              <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}
+                className="mt-3 w-full text-center bg-primary text-white rounded-full py-3 font-semibold text-base">
+                Book Appointment
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
@@ -130,98 +152,205 @@ const Header = () => {
 const Hero = () => (
   <section id="home" className="relative pt-20 pb-32 lg:pt-32 lg:pb-48 overflow-hidden">
     <div className="absolute inset-0 z-0">
-      <img 
-        src="/images/hero.png" 
-        alt="Modern Dental Clinic" 
+      <img
+        src="/images/hero.png"
+        alt="Modern Dental Clinic"
         className="w-full h-full object-cover object-center"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
+      <div className="absolute inset-0" style={{ background: "linear-gradient(105deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.88) 45%, rgba(255,255,255,0.3) 75%, transparent 100%)" }} />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
     </div>
-    
+
     <div className="container relative z-10 mx-auto px-4 max-w-7xl">
-      <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-        <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wide mb-6">
-          Advanced Dental Care in New Delhi
-        </span>
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif text-foreground leading-tight mb-6">
-          A Beautiful Smile Begins With Exceptional Care
-        </h1>
-        <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-          Experience world-class dentistry with Dr. Karan Malik. Over 20 years of crafting perfect smiles using state-of-the-art technology and a gentle, patient-centric approach.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white rounded-full text-base h-14 px-8">
-            <a href="#contact">Book Your Consultation</a>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="rounded-full text-base h-14 px-8 border-primary/20 text-foreground hover:bg-primary/5">
-            <a href="#services">Explore Services</a>
-          </Button>
-        </div>
-        
-        <div className="mt-12 flex flex-wrap items-center gap-4 text-sm font-medium text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-accent" />
-            <span>Painless Procedures</span>
+      <motion.div
+        className="max-w-2xl"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="inline-flex items-center gap-2 bg-white border border-primary/20 rounded-full px-4 py-2 mb-7 shadow-sm"
+        >
+          <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-sm font-semibold text-primary tracking-wide">Now Accepting New Patients · New Delhi</span>
+        </motion.div>
+
+        <motion.h1
+          className="text-5xl md:text-6xl lg:text-7xl font-bold font-serif text-foreground leading-[1.08] mb-6 tracking-tight"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.7 }}
+        >
+          Your Perfect<br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-400">Smile Awaits</span>
+        </motion.h1>
+
+        <motion.p
+          className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.7 }}
+        >
+          Experience world-class dentistry with Dr. Karan Malik — 20+ years of crafting perfect smiles with a gentle, patient-first approach.
+        </motion.p>
+
+        <motion.div
+          className="flex flex-col sm:flex-row gap-4 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+        >
+          <a href="#contact"
+            className="inline-flex items-center justify-center gap-2 text-white text-base font-semibold rounded-full h-14 px-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/30"
+            style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)" }}
+          >
+            Book Free Consultation
+            <ChevronRight className="h-5 w-5" />
+          </a>
+          <a href="#services"
+            className="inline-flex items-center justify-center gap-2 text-foreground text-base font-semibold rounded-full h-14 px-8 border-2 border-foreground/15 hover:border-primary hover:text-primary bg-white/60 backdrop-blur-sm transition-all duration-300"
+          >
+            Explore Services
+          </a>
+        </motion.div>
+
+        <motion.div
+          className="flex flex-wrap items-center gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7, duration: 0.6 }}
+        >
+          <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-sm border border-border/40">
+            <div className="flex -space-x-2">
+              {["bg-blue-400", "bg-rose-400", "bg-amber-400"].map((c, i) => (
+                <div key={i} className={`h-8 w-8 rounded-full ${c} border-2 border-white flex items-center justify-center text-white text-xs font-bold`}>{["R","P","A"][i]}</div>
+              ))}
+            </div>
+            <div>
+              <div className="flex gap-0.5 mb-0.5">
+                {[...Array(5)].map((_, i) => <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />)}
+              </div>
+              <p className="text-xs text-muted-foreground font-medium">5,000+ Happy Patients</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-accent" />
-            <span>Modern Equipment</span>
-          </div>
-        </div>
-      </div>
+          {[
+            { icon: <ShieldCheck className="h-4 w-4 text-primary" />, text: "Painless Procedures" },
+            { icon: <CheckCircle2 className="h-4 w-4 text-primary" />, text: "ISO Certified Clinic" },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-xl px-3 py-2 shadow-sm border border-border/40">
+              {item.icon}
+              <span className="text-sm font-semibold text-foreground/80">{item.text}</span>
+            </div>
+          ))}
+        </motion.div>
+      </motion.div>
     </div>
   </section>
 );
 
 const About = () => (
-  <section id="about" className="py-24 bg-white">
+  <section id="about" className="py-28 bg-white overflow-hidden">
     <div className="container mx-auto px-4 max-w-7xl">
       <div className="grid lg:grid-cols-2 gap-16 items-center">
-        <div className="relative overflow-hidden md:overflow-visible px-4 md:px-0">
-          <div className="absolute inset-0 md:-inset-4 bg-secondary/50 rounded-[2.5rem] transform -rotate-3 z-0"></div>
-          <img 
-            src="/images/doctor.png" 
-            alt="Dr. Karan Malik" 
-            className="relative z-10 rounded-[2rem] shadow-xl w-full max-w-md mx-auto object-cover aspect-[3/4]"
+        <motion.div
+          className="relative px-4 md:px-0"
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="absolute -inset-4 bg-gradient-to-br from-primary/10 to-teal-100/50 rounded-[2.5rem] -rotate-2 z-0" />
+          <div className="absolute -inset-4 bg-gradient-to-br from-primary/5 to-transparent rounded-[2.5rem] rotate-1 z-0" />
+          <img
+            src="/images/doctor.png"
+            alt="Dr. Karan Malik"
+            className="relative z-10 rounded-[2rem] shadow-2xl w-full max-w-md mx-auto object-cover aspect-[3/4]"
           />
-          <div className="absolute -bottom-6 -right-6 z-20 bg-white p-6 rounded-2xl shadow-lg border border-border/50 animate-in fade-in zoom-in duration-1000 delay-300 hidden md:block">
-            <div className="text-4xl font-bold text-primary mb-1">20+</div>
-            <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Years of<br/>Experience</div>
-          </div>
-        </div>
-        
-        <div>
-          <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-6">
-            Meet Dr. Karan Malik
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="absolute -bottom-4 -right-4 z-20 bg-white p-5 rounded-2xl shadow-xl border border-border/30 hidden md:block"
+          >
+            <div className="text-4xl font-black text-primary mb-0.5">20+</div>
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Years of<br />Excellence</div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="absolute top-8 -left-4 z-20 bg-white p-4 rounded-2xl shadow-xl border border-border/30 hidden md:flex items-center gap-3"
+          >
+            <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
+              <BadgeCheck className="h-5 w-5 text-green-600" />
+            </div>
+            <div>
+              <div className="text-xs font-black text-foreground uppercase tracking-wider">MDS Certified</div>
+              <div className="text-xs text-muted-foreground">Prosthodontist</div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <span className="inline-block text-primary font-bold tracking-[0.2em] uppercase text-xs bg-primary/10 rounded-full px-4 py-1.5 mb-5">About the Doctor</span>
+          <h2 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-6 leading-tight">
+            Meet<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500">Dr. Karan Malik</span>
           </h2>
-          <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-            With over two decades of clinical experience, Dr. Karan Malik is a leading figure in modern dentistry. His philosophy is simple: treat every patient like family, and use the best technology available to make every visit painless and perfect.
+          <p className="text-lg text-muted-foreground mb-5 leading-relaxed">
+            With over two decades of clinical experience, Dr. Karan Malik is a leading prosthodontist in New Delhi. His philosophy is simple — treat every patient like family, and use the best technology available to make every visit painless and perfect.
           </p>
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-            From routine checkups to complex full-mouth rehabilitations, Dr. Malik brings a meticulous eye for detail and a warm, calming presence to his practice, ensuring you leave with a smile you're proud of.
+          <p className="text-muted-foreground mb-10 leading-relaxed">
+            From routine checkups to complex full-mouth rehabilitations, Dr. Malik brings meticulous precision and a warm, calming presence that turns nervous patients into lifelong ones.
           </p>
-          
-          <div className="grid sm:grid-cols-2 gap-6 mb-10">
+
+          <div className="grid sm:grid-cols-2 gap-4 mb-10">
             {[
-              { title: "Expert Care", desc: "Highly trained specialist" },
-              { title: "Advanced Tech", desc: "Latest dental innovations" },
-              { title: "Gentle Approach", desc: "Anxiety-free treatments" },
-              { title: "Patient First", desc: "Tailored treatment plans" }
+              { icon: <Trophy className="h-5 w-5" />, title: "Award-Winning Care", desc: "15+ national dental awards", color: "text-amber-500 bg-amber-50" },
+              { icon: <Microscope className="h-5 w-5" />, title: "Advanced Technology", desc: "Digital X-ray, 3D Imaging", color: "text-blue-500 bg-blue-50" },
+              { icon: <HeartPulse className="h-5 w-5" />, title: "Gentle Approach", desc: "100% anxiety-free experience", color: "text-rose-500 bg-rose-50" },
+              { icon: <Users className="h-5 w-5" />, title: "Patient First", desc: "Personalized treatment plans", color: "text-teal-600 bg-teal-50" },
             ].map((item, i) => (
-              <div key={i} className="flex gap-4 items-start">
-                <div className="mt-1 bg-primary/10 p-2 rounded-full text-primary">
-                  <CheckCircle2 className="h-5 w-5" />
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 * i, duration: 0.4 }}
+                className="flex gap-4 items-start p-4 rounded-2xl border border-border/40 hover:border-primary/30 hover:shadow-md transition-all duration-300 bg-white"
+              >
+                <div className={`mt-0.5 p-2.5 rounded-xl ${item.color} flex-shrink-0`}>
+                  {item.icon}
                 </div>
                 <div>
-                  <h4 className="font-bold text-foreground">{item.title}</h4>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  <h4 className="font-bold text-foreground text-sm">{item.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-          
-          <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Signature_of_John_Hancock.svg" alt="Signature" className="h-12 opacity-50" />
-        </div>
+
+          <div className="flex items-center gap-6">
+            <a href="#contact"
+              className="inline-flex items-center gap-2 text-white font-semibold rounded-full px-7 py-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 text-sm"
+              style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)" }}
+            >
+              Book Consultation <ChevronRight className="h-4 w-4" />
+            </a>
+            <div className="text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">Free</span> first consultation
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   </section>
@@ -229,38 +358,54 @@ const About = () => (
 
 const Services = () => {
   const services = [
-    { title: "General Dentistry", desc: "Comprehensive checkups, cleanings, and preventative care to maintain optimal oral health.", icon: <Activity className="h-8 w-8" /> },
-    { title: "Teeth Whitening", desc: "Professional bleaching treatments for a brighter, more confident smile in just one visit.", icon: <Star className="h-8 w-8" /> },
-    { title: "Dental Implants", desc: "Permanent, natural-looking replacements for missing teeth that restore function and aesthetics.", icon: <ShieldCheck className="h-8 w-8" /> },
-    { title: "Orthodontics", desc: "Traditional braces and clear aligners to straighten teeth and correct bite issues.", icon: <HeartPulse className="h-8 w-8" /> },
-    { title: "Root Canal", desc: "Painless endodontic therapy to save infected teeth and relieve severe toothaches.", icon: <Activity className="h-8 w-8" /> },
-    { title: "Cosmetic Dentistry", desc: "Veneers, bonding, and smile makeovers tailored to your unique facial features.", icon: <Star className="h-8 w-8" /> },
+    { title: "General Dentistry", desc: "Comprehensive checkups, cleanings, and preventative care to maintain optimal oral health for the whole family.", icon: <Activity className="h-7 w-7" />, gradient: "from-teal-400 to-cyan-500", num: "01" },
+    { title: "Teeth Whitening", desc: "Professional in-chair bleaching for a dramatically brighter, more confident smile — results in a single visit.", icon: <Sparkles className="h-7 w-7" />, gradient: "from-amber-400 to-yellow-500", num: "02" },
+    { title: "Dental Implants", desc: "Permanent, natural-looking tooth replacements that restore full function and look completely natural.", icon: <ShieldCheck className="h-7 w-7" />, gradient: "from-blue-500 to-indigo-500", num: "03" },
+    { title: "Orthodontics", desc: "Invisible aligners and modern braces to straighten teeth and perfect your bite with precision.", icon: <TrendingUp className="h-7 w-7" />, gradient: "from-purple-500 to-violet-500", num: "04" },
+    { title: "Root Canal", desc: "Painless endodontic therapy using advanced techniques to save infected teeth and eliminate severe pain.", icon: <HeartPulse className="h-7 w-7" />, gradient: "from-rose-400 to-pink-500", num: "05" },
+    { title: "Cosmetic Dentistry", desc: "Veneers, bonding, and complete smile makeovers precisely tailored to complement your facial features.", icon: <Star className="h-7 w-7" />, gradient: "from-emerald-400 to-green-500", num: "06" },
   ];
 
   return (
-    <section id="services" className="py-24 bg-secondary/30">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-primary font-semibold tracking-wider uppercase text-sm">Our Expertise</span>
-          <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mt-4 mb-6">Comprehensive Dental Services</h2>
-          <p className="text-muted-foreground text-lg">We offer a full spectrum of dental treatments under one roof, utilizing advanced techniques to deliver superior results.</p>
-        </div>
+    <section id="services" className="py-28 bg-[#f8fafa] relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+        <motion.div
+          className="text-center max-w-3xl mx-auto mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-block text-primary font-bold tracking-[0.2em] uppercase text-xs bg-primary/10 rounded-full px-4 py-1.5 mb-5">Our Expertise</span>
+          <h2 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-5 leading-tight">Comprehensive<br />Dental Services</h2>
+          <p className="text-muted-foreground text-lg">A full spectrum of dental care under one roof — from routine checkups to complex smile transformations.</p>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
-            <div 
+            <motion.div
               key={index}
-              className="bg-white p-8 rounded-2xl shadow-sm border border-border/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              whileHover={{ y: -6 }}
+              className="bg-white p-8 rounded-3xl shadow-sm border border-border/40 hover:shadow-xl hover:border-transparent transition-all duration-400 group relative overflow-hidden"
             >
-              <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                {service.icon}
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+              <div className="flex items-start justify-between mb-6">
+                <div className={`w-14 h-14 bg-gradient-to-br ${service.gradient} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
+                  {service.icon}
+                </div>
+                <span className="text-4xl font-black text-foreground/5 group-hover:text-foreground/8 transition-colors select-none">{service.num}</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">{service.title}</h3>
-              <p className="text-muted-foreground mb-6">{service.desc}</p>
-              <a href="#contact" className="inline-flex items-center text-sm font-semibold text-primary group-hover:text-accent transition-colors">
-                Learn more <ChevronRight className="h-4 w-4 ml-1" />
+              <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-6">{service.desc}</p>
+              <a href="#contact" className="inline-flex items-center text-sm font-bold text-primary/70 group-hover:text-primary transition-colors gap-1">
+                Book Now <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </a>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -829,95 +974,156 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 bg-secondary/30">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="grid lg:grid-cols-2 gap-16">
-          <div>
-            <span className="text-primary font-semibold tracking-wider uppercase text-sm">Get In Touch</span>
-            <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mt-4 mb-6">Book Your Appointment</h2>
-            <p className="text-muted-foreground text-lg mb-10">
-              Ready to improve your smile? Fill out the form, and our reception team will get back to you within 24 hours to schedule your visit.
-            </p>
+    <section id="contact" className="py-28 bg-white relative overflow-hidden">
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+        <motion.div
+          className="text-center max-w-2xl mx-auto mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-block text-primary font-bold tracking-[0.2em] uppercase text-xs bg-primary/10 rounded-full px-4 py-1.5 mb-5">Get In Touch</span>
+          <h2 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-4 leading-tight">Book Your<br />Appointment</h2>
+          <p className="text-muted-foreground text-lg">Our team will confirm your visit within 24 hours.</p>
+        </motion.div>
 
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <div className="bg-white h-12 w-12 rounded-full flex items-center justify-center shadow-sm text-primary shrink-0">
-                  <MapPin className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground text-lg mb-1">Clinic Address</h4>
-                  <p className="text-muted-foreground">123 Dental Street, Health Park Avenue<br />New Delhi, India 110001</p>
-                </div>
-              </div>
-              
-              <div className="flex gap-4">
-                <div className="bg-white h-12 w-12 rounded-full flex items-center justify-center shadow-sm text-primary shrink-0">
-                  <Phone className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground text-lg mb-1">Phone Number</h4>
-                  <p className="text-muted-foreground">+91 98765 43210<br />011-2345-6789</p>
-                </div>
-              </div>
+        <div className="grid lg:grid-cols-5 gap-8 items-start">
+          <motion.div
+            className="lg:col-span-2 rounded-3xl p-8 text-white relative overflow-hidden"
+            style={{ background: "linear-gradient(145deg, #0d2d2a, #0d5c55, #0d3d4f)" }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="absolute top-0 right-0 w-48 h-48 rounded-full opacity-10 blur-2xl" style={{ background: "radial-gradient(circle, #14b8a6, transparent)" }} />
+            <h3 className="text-2xl font-bold font-serif mb-2">Contact Information</h3>
+            <p className="text-white/60 text-sm mb-10">We're here to help you smile brighter.</p>
 
-              <div className="flex gap-4">
-                <div className="bg-white h-12 w-12 rounded-full flex items-center justify-center shadow-sm text-primary shrink-0">
-                  <Clock className="h-6 w-6" />
+            <div className="space-y-7">
+              {[
+                { Icon: MapPin, title: "Our Location", val: "123 Dental Street, Health Park Avenue, New Delhi 110001" },
+                { Icon: Phone, title: "Call Us", val: "+91 98765 43210\n011-2345-6789" },
+                { Icon: Mail, title: "Email Us", val: "info@drkaranmalik.com" },
+                { Icon: Clock, title: "Working Hours", val: "Mon–Sat: 9:00 AM – 8:00 PM\nSunday: Closed" },
+              ].map(({ Icon, title, val }, i) => (
+                <div key={i} className="flex gap-4 items-start">
+                  <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Icon className="h-5 w-5 text-teal-300" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-white/50 uppercase tracking-widest font-bold mb-1">{title}</p>
+                    <p className="text-white/90 text-sm leading-relaxed whitespace-pre-line">{val}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-foreground text-lg mb-1">Working Hours</h4>
-                  <p className="text-muted-foreground">Monday - Saturday: 9:00 AM - 8:00 PM<br />Sunday: Closed</p>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
 
-          <div className="bg-white p-8 md:p-10 rounded-3xl shadow-lg border border-border">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">First Name</label>
-                  <Input required placeholder="John" className="h-12 bg-secondary/20" />
+            <div className="mt-10 pt-8 border-t border-white/10 flex gap-3">
+              {[Facebook, Twitter, Instagram].map((Icon, i) => (
+                <a key={i} href="#" className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="lg:col-span-3 bg-white rounded-3xl shadow-xl border border-border/30 p-8 md:p-10"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h3 className="text-xl font-bold text-foreground mb-7">Request an Appointment</h3>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">First Name</label>
+                  <Input required placeholder="John" className="h-12 rounded-xl bg-[#f8fafa] border-border/40 focus:border-primary" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Last Name</label>
-                  <Input required placeholder="Doe" className="h-12 bg-secondary/20" />
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Last Name</label>
+                  <Input required placeholder="Doe" className="h-12 rounded-xl bg-[#f8fafa] border-border/40 focus:border-primary" />
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Phone Number</label>
-                <Input required type="tel" placeholder="+91" className="h-12 bg-secondary/20" />
+              <div className="grid grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Phone</label>
+                  <Input required type="tel" placeholder="+91 98765 43210" className="h-12 rounded-xl bg-[#f8fafa] border-border/40" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Email</label>
+                  <Input required type="email" placeholder="john@example.com" className="h-12 rounded-xl bg-[#f8fafa] border-border/40" />
+                </div>
               </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Email Address</label>
-                <Input required type="email" placeholder="john@example.com" className="h-12 bg-secondary/20" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Preferred Date</label>
+                <Input required type="date" className="h-12 rounded-xl bg-[#f8fafa] border-border/40" />
               </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Preferred Date</label>
-                <Input required type="date" className="h-12 bg-secondary/20" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Message (Optional)</label>
+                <Textarea placeholder="Tell us about your concern or preferred service..." className="min-h-[100px] rounded-xl bg-[#f8fafa] border-border/40 resize-none" />
               </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Message (Optional)</label>
-                <Textarea placeholder="How can we help you?" className="min-h-[100px] bg-secondary/20" />
-              </div>
-
-              <Button type="submit" className="w-full h-14 text-lg rounded-xl bg-primary hover:bg-primary/90 text-white">
-                Request Appointment
-              </Button>
+              <button
+                type="submit"
+                className="w-full h-14 text-base font-bold text-white rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/25"
+                style={{ background: "linear-gradient(135deg, #0d9488, #14b8a6)" }}
+              >
+                Request Appointment →
+              </button>
+              <p className="text-center text-xs text-muted-foreground">We'll contact you within 24 hours to confirm. No spam, ever.</p>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 };
 
+const CTABanner = () => (
+  <section className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #0d9488 100%)" }}>
+    <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+    <div className="absolute left-0 top-0 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: "radial-gradient(circle, white, transparent)" }} />
+    <div className="container mx-auto px-4 max-w-5xl relative z-10 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 mb-6">
+          <Star className="h-4 w-4 fill-yellow-300 text-yellow-300" />
+          <span className="text-white text-sm font-semibold">4.9 Rating · 200+ Google Reviews</span>
+        </div>
+        <h2 className="text-4xl md:text-6xl font-bold font-serif text-white mb-5 leading-tight">
+          Ready to Transform<br />Your Smile?
+        </h2>
+        <p className="text-white/80 text-lg mb-10 max-w-xl mx-auto">
+          Join 5,000+ patients who trust Dr. Karan Malik for exceptional dental care. Your first consultation is completely free.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#contact"
+            className="inline-flex items-center justify-center gap-2 bg-white text-primary font-bold rounded-full px-9 py-4 text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+          >
+            Book Free Consultation <ChevronRight className="h-5 w-5" />
+          </a>
+          <a href="tel:+919876543210"
+            className="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white font-semibold rounded-full px-9 py-4 text-base hover:bg-white/10 transition-all duration-300"
+          >
+            <Phone className="h-4 w-4" /> Call +91 98765 43210
+          </a>
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
+
 const Footer = () => (
-  <footer className="bg-slate-900 text-white pt-20 pb-10">
+  <footer className="bg-slate-950 text-white pt-20 pb-10 relative">
+    <div className="absolute top-0 left-0 right-0 h-1" style={{ background: "linear-gradient(90deg, #0d9488, #0891b2, #0d9488)" }} />
     <div className="container mx-auto px-4 max-w-7xl">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         <div>
@@ -1006,6 +1212,7 @@ export default function Home() {
         <WhyChooseUs />
         <Gallery />
         <Testimonials />
+        <CTABanner />
         <Contact />
       </main>
       <Footer />
